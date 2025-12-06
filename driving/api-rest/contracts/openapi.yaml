@@ -45,11 +45,11 @@ paths:
                         pages: 350
                         year: 2001
                         editorial:
-                          - id: 1
-                          - name: "Editorial 1"
-                          - address: "Address 1"
-                          - maximumBooks: 1200
-                          - email: "editorial1.mail@com"
+                          id: 1
+                          name: "Editorial 1"
+                          address: "Address 1"
+                          maximumBooks: 1200
+                          email: "editorial1.mail@com"
                       - id: 1
                         title: "Book 2"
                         author: "Author 2"
@@ -57,11 +57,11 @@ paths:
                         pages: 120
                         year: 1989
                         editorial:
-                          - id: 2
-                          - name: "Editorial 2"
-                          - address: "Address 2"
-                          - maximumBooks: 860
-                          - email: "editorial2.mail@com"
+                          id: 2
+                          name: "Editorial 2"
+                          address: "Address 2"
+                          maximumBooks: 860
+                          email: "editorial2.mail@com"
                       - id: 2
                         title: "Book 3"
                         author: "Author 3"
@@ -69,11 +69,11 @@ paths:
                         pages: 500
                         year: 2021
                         editorial:
-                          - id: 3
-                          - name: "Editorial 3"
-                          - address: "Address 3"
-                          - maximumBooks: 140
-                          - email: "editorial3.mail@com"
+                          id: 3
+                          name: "Editorial 3"
+                          address: "Address 3"
+                          maximumBooks: 140
+                          email: "editorial3.mail@com"
                     totalBooks: 3
                     timestamp: "2024-06-03T14:30:00Z"
         "400":

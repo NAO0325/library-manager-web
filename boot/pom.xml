@@ -52,7 +52,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <compilerArg>-Amapstruct.defaultComponentModel=springS</compilerArg>
+                        <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -61,7 +61,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.7.3</version>
                 <configuration>
-                    <mainClass>com.library.manager.back.Application</mainClass>
+                    <mainClass>com.library.manager.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
