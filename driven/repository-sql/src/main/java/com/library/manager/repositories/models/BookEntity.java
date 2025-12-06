@@ -1,5 +1,6 @@
 package com.library.manager.repositories.models;
 
+import com.library.manager.domain.BookGenre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,13 +31,14 @@ public class BookEntity {
     @Column(name = "AUTHOR", nullable = false)
     private String author;
 
-    @Size(max = 200)
+    @Size(max = 250)
     @Column(name = "TITLE")
     private String title;
 
     @Size(max = 150)
+    @Enumerated(EnumType.STRING)
     @Column(name = "GENRE")
-    private String genre;
+    private BookGenre genre;
 
     @Column(name = "PAGES")
     private Integer pages;

@@ -24,8 +24,95 @@ paths:
       tags:
         - Book List
       summary: List all active books
-      description: List all books with status active
+      description: |
+        Retrieves a paginated list of all books with status active.
+        Supports pagination, sorting, and filtering.
       operationId: getBooks
+      parameters:
+        - name: page
+          in: query
+          description: Page number to retrieve (1-indexed). First page is 1.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+            minimum: 1
+            example: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            minimum: 1
+            maximum: 100
+            example: 10
+        - name: sortDirection
+          in: query
+          description: Sort direction (ASC or DESC)
+          required: false
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+            example: ASC
+        - name: sortBy
+          in: query
+          description: |
+            Field to sort by.
+            Allowed values: title, author, publicationYear
+          required: false
+          schema:
+            type: string
+            enum:
+              - title
+              - author
+              - publicationYear
+              - genre
+            default: title
+            example: title
+        - name: author
+          in: query
+          description: Filter books by author name
+          required: false
+          schema:
+            type: string
+            maxLength: 250
+            example: "García Márquez"
+        - name: title
+          in: query
+          description: Filter books by title
+          required: false
+          schema:
+            type: string
+            maxLength: 250
+            example: "Cien años de soledad"
+        - name: genre
+          in: query
+          description: Filter books by genre
+          required: false
+          schema:
+            type: string
+            enum:
+              - FICTION
+              - NON_FICTION
+              - CLASSIC
+              - MYSTERY
+              - HISTORICAL_FICTION
+              - FANTASY
+              - ROMANCE
+              - SCIENCE_FICTION
+              - CHILDREN
+              - ESSAY
+              - ADVENTURE
+              - OTHER
+            example: "FANTASY"
+
       responses:
         "200":
           description: Books successfully listed
@@ -213,13 +300,11 @@ components:
           type: string
           description: Error code identifier
           enum:
-            - "INVALID_CRITERIA"
-            - "MISSING_CRITERIA"
             - "VALIDATION_ERROR"
             - "INTERNAL_ERROR"
             - "INVALID_JSON"
             - "INVALID_PARAMETER"
-          example: "INVALID_CRITERIA"
+          example: "VALIDATION_ERROR"
         message:
           type: string
           description: Human-readable error message
