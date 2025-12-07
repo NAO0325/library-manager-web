@@ -1,12 +1,9 @@
-package com.library.manager.repositories.models;
+package com.library.manager.driven.repositories.models;
 
 import com.library.manager.domain.BookGenre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +20,7 @@ public class BookEntity {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EDITORIAL_ID", nullable = false)
     private EditorialEntity editorial;
 

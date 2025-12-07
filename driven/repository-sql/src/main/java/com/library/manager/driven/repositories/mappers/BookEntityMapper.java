@@ -1,13 +1,13 @@
-package com.library.manager.repositories.mappers;
+package com.library.manager.driven.repositories.mappers;
 
 import com.library.manager.domain.Book;
 import com.library.manager.domain.valueobjects.PaginatedResult;
-import com.library.manager.repositories.models.BookEntity;
+import com.library.manager.driven.repositories.models.BookEntity;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 
 
-@Mapper(componentModel = "spring", uses = {EditorialEntityMapper.class, PaginationMapper.class})
+@Mapper(componentModel = "spring", uses = {EditorialEntityMapper.class})
 public interface BookEntityMapper {
 
     Book toDomain(BookEntity bookEntity);
@@ -20,7 +20,8 @@ public interface BookEntityMapper {
         return new PaginatedResult<>(
                 bookPage.getContent(),
                 bookPage.getTotalElements(),
-                bookPage.getNumber(),
+                bookPage.getTotalPages(),
+                bookPage.getNumber() + 1,
                 bookPage.getSize());
     }
 }

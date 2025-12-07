@@ -27,7 +27,4 @@ public class Editorial {
     private LocalDateTime updatedAt;
 
     private String email;
-
-    private Collection<Book> books;
-
 }

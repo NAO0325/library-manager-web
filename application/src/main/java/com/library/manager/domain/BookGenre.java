@@ -5,18 +5,18 @@ import lombok.Getter;
 @Getter
 public enum BookGenre {
 
-    FICTION("Ficción"),
-    NON_FICTION("No ficción"),
-    CLASSIC("Clásico"),
-    MYSTERY("Misterio"),
-    HISTORICAL_FICTION("Ficción histórica"),
-    FANTASY("Fantasía"),
-    ROMANCE("Romance"),
-    SCIENCE_FICTION("Ciencia ficción"),
-    CHILDREN("Infantil"),
-    ESSAY("Ensayo"),
-    ADVENTURE("Aventuras"),
-    OTHER("Otro");
+    FICTION("FICTION"),
+    NON_FICTION("NON_FICTION"),
+    CLASSIC("CLASSIC"),
+    MYSTERY("MYSTERY"),
+    HISTORICAL_FICTION("HISTORICAL_FICTION"),
+    FANTASY("FANTASY"),
+    ROMANCE("ROMANCE"),
+    SCIENCE_FICTION("SCIENCE_FICTION"),
+    CHILDREN("CHILDREN"),
+    ESSAY("ESSAY"),
+    ADVENTURE("ADVENTURE"),
+    OTHER("OTHER");
 
     private final String displayName;
 

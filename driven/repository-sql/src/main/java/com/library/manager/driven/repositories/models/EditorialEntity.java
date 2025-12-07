@@ -1,12 +1,9 @@
-package com.library.manager.repositories.models;
+package com.library.manager.driven.repositories.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -48,7 +45,4 @@ public class EditorialEntity {
     @Size(max = 100)
     @Column(name = "EMAIL")
     private String email;
-
-    @OneToMany(mappedBy = "editorial")
-    private Collection<BookEntity> books;
 }

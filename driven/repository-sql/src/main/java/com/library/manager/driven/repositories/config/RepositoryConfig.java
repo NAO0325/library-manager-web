@@ -1,4 +1,4 @@
-package com.library.manager.repositories.config;
+package com.library.manager.driven.repositories.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -2,15 +2,17 @@ package com.library.manager.driving.controllers.adapters;
 
 
 import com.library.manager.application.ports.driving.BookServicePort;
+import com.library.manager.domain.Book;
+import com.library.manager.domain.BookGenre;
 import com.library.manager.domain.valueobjects.BookFilter;
+import com.library.manager.domain.valueobjects.PaginatedResult;
 import com.library.manager.domain.valueobjects.PaginationQuery;
 import com.library.manager.driving.controllers.api.BooksApi;
+import com.library.manager.driving.controllers.mappers.BookMapper;
 import com.library.manager.driving.controllers.models.BooksResponse;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,21 +23,39 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookControllerAdapter implements BooksApi {
 
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final String DEFAULT_SORT_BY = "id";
+    private static final String DEFAULT_SORT_DIRECTION = "ASC";
+
     private final BookServicePort bookServicePort;
 
+    private final BookMapper mapper;
+
     @Override
-    public ResponseEntity<BooksResponse> getBooks(Optional<@Min(1) Integer> page,
-                                                  Optional<@Min(1) @Max(100) Integer> pageSize,
+    public ResponseEntity<BooksResponse> getBooks(Optional<Integer> page,
+                                                  Optional<Integer> pageSize,
                                                   Optional<String> sortDirection,
                                                   Optional<String> sortBy,
-                                                  Optional<@Size(max = 250) String> author,
-                                                  Optional<@Size(max = 250) String> title,
+                                                  Optional<String> author,
+                                                  Optional<String> title,
                                                   Optional<String> genre) {
 
-        BookFilter bf = new BookFilter(null, null, null, true);
+        String genreFilter = genre.map(String::toUpperCase).orElse(null);
+        BookGenre bookGenre = (genreFilter != null) ? BookGenre.valueOf(genreFilter) : null;
+        BookFilter filter = mapper.toFilter(author.orElse(null), title.orElse(null), bookGenre);
 
-        bookServicePort.getAllWithFilters(bf, new PaginationQuery(1, 10));
+        PaginatedResult<Book> paginatedResult = bookServicePort.getAllWithFilters(
+                filter,
+                new PaginationQuery(
+                        page.orElse(DEFAULT_PAGE) - 1,
+                        pageSize.orElse(DEFAULT_PAGE_SIZE),
+                        sortBy.orElse(DEFAULT_SORT_BY),
+                        sortDirection.orElse(DEFAULT_SORT_DIRECTION)
+                ));
 
-        return null;
+        BooksResponse response = mapper.toResponse(paginatedResult);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -9,9 +9,9 @@ info:
   description: API for library management services.
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8080/v1
     description: Development environment
-  - url: https://api.library.com
+  - url: https://api.library.com/v1
     description: Production environment
 
 tags:
@@ -65,15 +65,16 @@ paths:
           in: query
           description: |
             Field to sort by.
-            Allowed values: title, author, genre, publicationYear
+            Allowed values: id, title, author, bookGenre, publicationYear
           required: false
           schema:
             type: string
             enum:
+              - id
               - title
               - author
               - publicationYear
-              - genre
+              - bookGenre
             default: title
             example: title
         - name: author
@@ -161,8 +162,12 @@ paths:
                           address: "Address 3"
                           maximumBooks: 140
                           email: "editorial3.mail@com"
-                    totalBooks: 3
-                    timestamp: "2024-06-03T14:30:00Z"
+                    pagination:
+                      timestamp: "2024-06-03T14:30:00Z"
+                      size: 10
+                      totalPages: 5,
+                      number: 0,
+                      totalElements: 100
         "400":
           description: Invalid sorting criteria
           content:
@@ -201,31 +206,23 @@ components:
       type: object
       required:
         - books
-        - totalBooks
-        - timestamp
+        - pagination
       properties:
         books:
           type: array
           description: List of books active
           items:
-            $ref: "#/components/schemas/Book"
-        totalProducts:
-          type: integer
-          description: Total number of books returned
-          example: 6
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp when the sorting was performed
-          example: "2024-06-03T14:30:00Z"
+            $ref: "#/components/schemas/BookResource"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
 
-    Book:
+    BookResource:
       type: object
       required:
         - id
         - title
         - author
-        - gender
+        - bookGenre
         - pages
         - editorial
       properties:
@@ -242,24 +239,24 @@ components:
           type: string
           description: author
           example: "Jane Austen"
-        gender:
+        bookGenre:
           type: string
-          description: gender
-          example: "Novela"
+          description: genre
+          example: "NOVEL"
         pages:
           type: integer
           description: Number of pages
           minimum: 1
           example: 100
-        year:
+        publicationYear:
           type: integer
           description: Year of publish
           example: 1813
         editorial:
-          $ref: "#/components/schemas/Editorial"
+          $ref: "#/components/schemas/EditorialResource"
           description: Editorial of book
 
-    Editorial:
+    EditorialResource:
       type: object
       required:
         - id
@@ -289,6 +286,28 @@ components:
           description: email
           example: "editorial.mail@com"
 
+    Pagination:
+      type: object
+      description: Pagination information
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the request was performed
+          example: "2024-06-03T14:30:00Z"
+        size:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+
     Error:
       type: object
       required:
@@ -300,6 +319,7 @@ components:
           type: string
           description: Error code identifier
           enum:
+            - "INVALID_CRITERIA"
             - "VALIDATION_ERROR"
             - "INTERNAL_ERROR"
             - "INVALID_JSON"
