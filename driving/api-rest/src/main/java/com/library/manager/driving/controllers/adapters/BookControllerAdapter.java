@@ -9,6 +9,8 @@ import com.library.manager.domain.valueobjects.PaginatedResult;
 import com.library.manager.domain.valueobjects.PaginationQuery;
 import com.library.manager.driving.controllers.api.BooksApi;
 import com.library.manager.driving.controllers.mappers.BookMapper;
+import com.library.manager.driving.controllers.models.BookRequest;
+import com.library.manager.driving.controllers.models.BookResponse;
 import com.library.manager.driving.controllers.models.BooksResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,11 @@ public class BookControllerAdapter implements BooksApi {
     private final BookServicePort bookServicePort;
 
     private final BookMapper mapper;
+
+    @Override
+    public ResponseEntity<BookResponse> createBook(BookRequest bookRequest) {
+        return null;
+    }
 
     @Override
     public ResponseEntity<BooksResponse> getBooks(Optional<Integer> page,

@@ -20,6 +20,70 @@ tags:
 
 paths:
   /v1/books:
+    post:
+      summary: Create a new book
+      description: Create a new book in the library
+      operationId: createBook
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+            examples:
+              createBookExample:
+                summary: Example of book creation
+                value:
+                  title: "Clean Code"
+                  author: "Robert C. Martin"
+                  bookGenre: "Programming"
+                  publicationYear: 2008
+      responses:
+        '201':
+          description: Successfully created book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+              examples:
+                bookCreatedExample:
+                  summary: Book created
+                  value:
+                    id: 1
+                    title: "Clean Code"
+                    author: "Robert C. Martin"
+                    publicationYear: 2008
+                    bookGenre: "Programming"
+                    createdAt: "2025-12-07T20:57:00Z"
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidRequestExample:
+                  value:
+                    timestamp: "2025-12-07T20:57:00Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "The 'title' field is required"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                server_error:
+                  summary: Internal server error
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "An unexpected error occurred while processing the request"
+                    timestamp: "2024-06-03T14:30:00Z"
+
     get:
       tags:
         - Books
@@ -169,7 +233,7 @@ paths:
                       number: 0,
                       totalElements: 100
         "400":
-          description: Invalid sorting criteria
+          description: Invalid criteria
           content:
             application/json:
               schema:
@@ -182,7 +246,7 @@ paths:
                     message: "Weight values must be non-negative numbers"
                     timestamp: "2024-06-03T14:30:00Z"
                 missing_weights:
-                  summary: Missing criteria weights
+                  summary: Missing criteria
                   value:
                     code: "MISSING_CRITERIA"
                     message: "At least one sorting criteria weight must be provided"
@@ -200,8 +264,41 @@ paths:
                     code: "INTERNAL_ERROR"
                     message: "An unexpected error occurred while processing the request"
                     timestamp: "2024-06-03T14:30:00Z"
+
 components:
   schemas:
+
+    BookRequest:
+      type: object
+      required:
+        - title
+        - author
+        - bookGenre
+      properties:
+        title:
+          type: string
+          description: Book Title
+          example: "Clean Code"
+          minLength: 1
+          maxLength: 255
+        author:
+          type: string
+          description: Book Author
+          example: "Robert C. Martin"
+          minLength: 1
+          maxLength: 255
+        publicationYear:
+          type: integer
+          description: Año de publicación
+          example: 2008
+          minimum: 1000
+          maximum: 2100
+        bookGenre:
+          type: string
+          description: Género literario
+          example: "Programming"
+          maxLength: 100
+
     BooksResponse:
       type: object
       required:
@@ -212,11 +309,11 @@ components:
           type: array
           description: List of books active
           items:
-            $ref: "#/components/schemas/BookResource"
+            $ref: "#/components/schemas/BookResponse"
         pagination:
           $ref: "#/components/schemas/Pagination"
 
-    BookResource:
+    BookResponse:
       type: object
       required:
         - id
