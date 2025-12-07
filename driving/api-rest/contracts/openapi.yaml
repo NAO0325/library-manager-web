@@ -22,7 +22,7 @@ paths:
   /v1/books:
     get:
       tags:
-        - Book List
+        - Books
       summary: List all active books
       description: |
         Retrieves a paginated list of all books with status active.
@@ -65,7 +65,7 @@ paths:
           in: query
           description: |
             Field to sort by.
-            Allowed values: title, author, publicationYear
+            Allowed values: title, author, genre, publicationYear
           required: false
           schema:
             type: string

@@ -38,7 +38,7 @@ public class BookEntity {
     @Size(max = 150)
     @Enumerated(EnumType.STRING)
     @Column(name = "GENRE")
-    private BookGenre genre;
+    private BookGenre bookGenre;
 
     @Column(name = "PAGES")
     private Integer pages;
