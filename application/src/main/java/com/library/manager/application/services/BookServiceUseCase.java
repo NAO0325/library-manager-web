@@ -38,10 +38,11 @@ public class BookServiceUseCase implements BookServicePort {
 
     @Override
     public Book update(Book book) {
-        LocalDateTime now = LocalDateTime.now();
         validateId(book.getId());
-        getBookIfExist(book.getId());
+        Book bookOld = getBookIfExist(book.getId());
 
+        book.setActive(bookOld.getActive());
+        book.setCreatedAt(bookOld.getCreatedAt());
         book.setUpdatedAt(LocalDateTime.now());
 
         return bookRepositoryPort.save(book);

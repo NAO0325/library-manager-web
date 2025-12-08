@@ -257,8 +257,113 @@ paths:
                     timestamp: "2024-06-03T14:30:00Z"
 
   /v1/books/{id}:
+    delete:
+      tags:
+        - Books
+      summary: Deactivate book by ID
+      description: Deactivate a book in the library
+      operationId: deactivateBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Book successfully deactivated
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidRequestExample:
+                  value:
+                    timestamp: "2025-12-07T20:57:00Z"
+                    status: 400
+                    error: "Nof found"
+                    message: "Book not found"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                server_error:
+                  summary: Internal server error
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "An unexpected error occurred while processing the request"
+                    timestamp: "2024-06-03T14:30:00Z"
+
+    get:
+      tags:
+        - Books
+      summary: Get active book by ID
+      description: Get a book active in the library
+      operationId: getBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Book successfully recovered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+              examples:
+                success_response:
+                  summary: Successful list response
+                  value:
+                    books:
+                      - id: 5
+                        title: "Book 1"
+                        author: "Author 1"
+                        gender: "Gender 1"
+                        pages: 350
+                        year: 2001
+                        createdAt: "2025-12-07T20:57:00Z"
+                        updatedAt: "2025-12-07T20:57:00Z"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidRequestExample:
+                  value:
+                    timestamp: "2025-12-07T20:57:00Z"
+                    status: 400
+                    error: "Nof found"
+                    message: "Book not found"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                server_error:
+                  summary: Internal server error
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "An unexpected error occurred while processing the request"
+                    timestamp: "2024-06-03T14:30:00Z"
+
     put:
-      summary: Update a book
+      summary: Update a book by ID
       description: Update a book in the library
       operationId: updateBook
       tags:
