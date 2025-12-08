@@ -17,7 +17,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@ControllerAdvice(basePackages = "com.library.manager.driving.controllers.adapters")
 @Component
 public class CustomExceptionHandler {
 

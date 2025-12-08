@@ -236,7 +236,7 @@ class BookEntityMapperTest {
             assertEquals(1, result.content().size());
             assertEquals(1L, result.totalElements());
             assertEquals(1, result.totalPages());
-            assertEquals(1, result.pageNumber()); // Note: page number is 0-indexed in Spring but 1-indexed in result
+            assertEquals(0, result.pageNumber());
             assertEquals(10, result.pageSize());
         }
 
@@ -254,7 +254,7 @@ class BookEntityMapperTest {
             assertTrue(result.content().isEmpty());
             assertEquals(0L, result.totalElements());
             assertEquals(0, result.totalPages());
-            assertEquals(1, result.pageNumber());
+            assertEquals(0, result.pageNumber());
             assertEquals(10, result.pageSize());
         }
 
@@ -298,7 +298,7 @@ class BookEntityMapperTest {
             PaginatedResult<Book> result = bookEntityMapper.toBookPaginatedResult(entityPage);
 
             // Assert
-            assertEquals(3, result.pageNumber()); // Page 2 (0-indexed) becomes 3 (1-indexed)
+            assertEquals(2, result.pageNumber());
         }
 
         @Test

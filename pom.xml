@@ -90,6 +90,7 @@
     <modules>
         <module>application</module>
         <module>driving/api-rest</module>
+        <module>driving/web</module>
         <module>driven/repository-sql</module>
         <module>boot</module>
     </modules>

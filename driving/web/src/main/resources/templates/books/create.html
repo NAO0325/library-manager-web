@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(title='Create Book', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Create New Book</h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/ui/books}" th:object="${book}" method="post">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Title *</label>
+                                <input type="text" class="form-control" th:field="*{title}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Author *</label>
+                                <input type="text" class="form-control" th:field="*{author}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Genre</label>
+                                <select class="form-select" th:field="*{bookGenre}">
+                                    <option th:each="g : ${genres}" th:value="${g}" th:text="${g.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Pages</label>
+                                <input type="number" class="form-control" th:field="*{pages}" min="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Year</label>
+                                <input type="number" class="form-control" th:field="*{publicationYear}" min="1000" max="2999">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/ui/books" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Book</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -21,7 +21,7 @@ public interface BookEntityMapper {
                 bookPage.getContent(),
                 bookPage.getTotalElements(),
                 bookPage.getTotalPages(),
-                bookPage.getNumber() + 1,
+                bookPage.getNumber(),
                 bookPage.getSize());
     }
 }

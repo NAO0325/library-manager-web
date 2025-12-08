@@ -10,7 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.library.manager.domain",
         "com.library.manager.boot",
         "com.library.manager.driven.repositories",
-        "com.library.manager.driving.controllers"
+        "com.library.manager.driving.controllers",
+        "com.library.manager.driving.web"
 })
 public class Application {
 
