@@ -353,6 +353,7 @@ class BookWebControllerTest {
             anotherBook.setBookGenre(BookGenre.MYSTERY);
             anotherBook.setPages(200);
             anotherBook.setPublicationYear(2023);
+            anotherBook.setActive(true);
             when(bookServicePort.findActiveById(42L)).thenReturn(anotherBook);
 
             // Act & Assert

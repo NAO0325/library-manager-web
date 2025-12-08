@@ -2,7 +2,6 @@ package com.library.manager.driving.web.exception;
 
 import com.library.manager.application.exceptions.BookNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,22 +11,19 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleBookNotFoundException(BookNotFoundException ex, Model model) {
-        model.addAttribute("error", ex.getMessage());
-        return "error/404";
+    public void handleBookNotFoundException(BookNotFoundException ex) {
+        // Exception is handled by @ResponseStatus
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleIllegalArgumentException(IllegalArgumentException ex, Model model) {
-        model.addAttribute("error", ex.getMessage());
-        return "error/400";
+    public void handleIllegalArgumentException(IllegalArgumentException ex) {
+        // Exception is handled by @ResponseStatus
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleGenericException(Exception ex, Model model) {
-        model.addAttribute("error", "An unexpected error occurred");
-        return "error/500";
+    public void handleGenericException(Exception ex) {
+        // Exception is handled by @ResponseStatus
     }
 }
