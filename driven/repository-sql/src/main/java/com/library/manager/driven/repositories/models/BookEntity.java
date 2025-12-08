@@ -20,10 +20,6 @@ public class BookEntity {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EDITORIAL_ID", nullable = false)
-    private EditorialEntity editorial;
-
     @Size(max = 250)
     @Column(name = "AUTHOR", nullable = false)
     private String author;
@@ -32,7 +28,6 @@ public class BookEntity {
     @Column(name = "TITLE")
     private String title;
 
-    @Size(max = 150)
     @Enumerated(EnumType.STRING)
     @Column(name = "GENRE")
     private BookGenre bookGenre;

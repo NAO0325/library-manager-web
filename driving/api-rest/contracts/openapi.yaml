@@ -39,6 +39,7 @@ paths:
                   title: "Clean Code"
                   author: "Robert C. Martin"
                   bookGenre: "Programming"
+                  pages: 250
                   publicationYear: 2008
       responses:
         '201':
@@ -56,7 +57,9 @@ paths:
                     author: "Robert C. Martin"
                     publicationYear: 2008
                     bookGenre: "Programming"
+                    pages: 350
                     createdAt: "2025-12-07T20:57:00Z"
+                    updatedAt: "2025-12-07T20:57:00Z"
         '400':
           description: Invalid input data
           content:
@@ -196,36 +199,24 @@ paths:
                         gender: "Gender 1"
                         pages: 350
                         year: 2001
-                        editorial:
-                          id: 1
-                          name: "Editorial 1"
-                          address: "Address 1"
-                          maximumBooks: 1200
-                          email: "editorial1.mail@com"
+                        createdAt: "2025-12-07T20:57:00Z"
+                        updatedAt: "2025-12-07T20:57:00Z"
                       - id: 1
                         title: "Book 2"
                         author: "Author 2"
                         gender: "Gender 2"
                         pages: 120
                         year: 1989
-                        editorial:
-                          id: 2
-                          name: "Editorial 2"
-                          address: "Address 2"
-                          maximumBooks: 860
-                          email: "editorial2.mail@com"
+                        createdAt: "2025-12-07T20:57:00Z"
+                        updatedAt: "2025-12-07T20:57:00Z"
                       - id: 2
                         title: "Book 3"
                         author: "Author 3"
                         gender: "Gender 3"
                         pages: 500
                         year: 2021
-                        editorial:
-                          id: 3
-                          name: "Editorial 3"
-                          address: "Address 3"
-                          maximumBooks: 140
-                          email: "editorial3.mail@com"
+                        createdAt: "2025-12-07T20:57:00Z"
+                        updatedAt: "2025-12-07T20:57:00Z"
                     pagination:
                       timestamp: "2024-06-03T14:30:00Z"
                       size: 10
@@ -265,6 +256,95 @@ paths:
                     message: "An unexpected error occurred while processing the request"
                     timestamp: "2024-06-03T14:30:00Z"
 
+  /v1/books/{id}:
+    put:
+      summary: Update a book
+      description: Update a book in the library
+      operationId: updateBook
+      tags:
+        - Books
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+            examples:
+              updateBookExample:
+                summary: Example of book updated
+                value:
+                  title: "Clean Code"
+                  author: "Robert C. Martin"
+                  bookGenre: "Programming"
+                  pages: 250
+                  publicationYear: 2008
+      responses:
+        '200':
+          description: Successfully updated book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+              examples:
+                bookUpdatedExample:
+                  summary: Book updated
+                  value:
+                    id: 1
+                    title: "Clean Code"
+                    author: "Robert C. Martin"
+                    publicationYear: 2008
+                    bookGenre: "Programming"
+                    pages: 350
+                    createdAt: "2025-12-07T20:57:00Z"
+                    updatedAt: "2025-12-08T20:58:00Z"
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidRequestExample:
+                  value:
+                    timestamp: "2025-12-07T20:57:00Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "The 'title' field is required"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidRequestExample:
+                  value:
+                    timestamp: "2025-12-07T20:57:00Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "The 'title' field is required"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                server_error:
+                  summary: Internal server error
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "An unexpected error occurred while processing the request"
+                    timestamp: "2024-06-03T14:30:00Z"
+
 components:
   schemas:
 
@@ -289,15 +369,31 @@ components:
           maxLength: 255
         publicationYear:
           type: integer
-          description: Año de publicación
+          description: Year of publication
           example: 2008
           minimum: 1000
-          maximum: 2100
         bookGenre:
+          description: Literary genre
           type: string
-          description: Género literario
-          example: "Programming"
-          maxLength: 100
+          enum:
+            - FICTION
+            - NON_FICTION
+            - CLASSIC
+            - MYSTERY
+            - HISTORICAL_FICTION
+            - FANTASY
+            - ROMANCE
+            - SCIENCE_FICTION
+            - CHILDREN
+            - ESSAY
+            - ADVENTURE
+            - OTHER
+          example: "FANTASY"
+        pages:
+          type: integer
+          description: Total pages
+          example: 150
+          minimum: 1
 
     BooksResponse:
       type: object
@@ -321,7 +417,6 @@ components:
         - author
         - bookGenre
         - pages
-        - editorial
       properties:
         id:
           type: integer
@@ -349,39 +444,16 @@ components:
           type: integer
           description: Year of publish
           example: 1813
-        editorial:
-          $ref: "#/components/schemas/EditorialResource"
-          description: Editorial of book
-
-    EditorialResource:
-      type: object
-      required:
-        - id
-        - name
-        - maximumBooks
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Editorial identifier
-          example: 1
-        name:
+        createdAt:
           type: string
-          description: name
-          example: "Verbum"
-        address:
+          format: date-time
+          description: Timestamp when the book was created
+          example: "2024-06-03T14:30:00Z"
+        updatedAt:
           type: string
-          description: address
-          example: "Calle falsa 123"
-        maximumBooks:
-          type: integer
-          description: Number of books in editorial
-          minimum: -1
-          example: 100
-        email:
-          type: string
-          description: email
-          example: "editorial.mail@com"
+          format: date-time
+          description: Timestamp when the book was updated
+          example: "2024-06-03T14:30:00Z"
 
     Pagination:
       type: object
@@ -436,5 +508,4 @@ components:
           description: Additional error details (optional)
           additionalProperties: true
           example:
-            field: "criteria.weights.sales_units"
-            rejectedValue: -0.1
+            field: "Error in value"

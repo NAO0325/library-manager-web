@@ -13,6 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +29,29 @@ public class BookRepositoryAdapter implements BookRepositoryPort {
     private final PaginationEntityMapper paginationEntityMapper;
 
     @Override
+    public Book save(Book book) {
+
+        BookEntity bookEntity = bookEntityMapper.toEntity(book);
+
+        return bookEntityMapper.toDomain(bookJpaRepository.save(bookEntity));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Book> findActiveById(Long bookId) {
+        return bookJpaRepository.findByIdAndActiveTrue(bookId)
+                .map(bookEntityMapper::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Book> findById(Long bookId) {
+        return bookJpaRepository.findById(bookId)
+                .map(bookEntityMapper::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PaginatedResult<Book> findAllWithFilters(BookFilter filter, PaginationQuery paginationQuery) {
 
         Pageable pageable = paginationEntityMapper.toPageable(paginationQuery);

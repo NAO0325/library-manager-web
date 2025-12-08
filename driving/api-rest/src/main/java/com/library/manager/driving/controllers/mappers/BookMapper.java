@@ -4,6 +4,7 @@ import com.library.manager.domain.Book;
 import com.library.manager.domain.BookGenre;
 import com.library.manager.domain.valueobjects.BookFilter;
 import com.library.manager.domain.valueobjects.PaginatedResult;
+import com.library.manager.driving.controllers.models.BookRequest;
 import com.library.manager.driving.controllers.models.BookResponse;
 import com.library.manager.driving.controllers.models.BooksResponse;
 import com.library.manager.driving.controllers.models.Pagination;
@@ -12,8 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.List;
 
 @Component
@@ -21,7 +21,12 @@ import java.util.List;
 public interface BookMapper {
 
     @Mapping(source = "bookGenre", target = "bookGenre", qualifiedByName = "EnumToString")
+    @Mapping(source = "createdAt", target = "createdAt", qualifiedByName = "LocalDateTimeToOffsetDateTime")
+    @Mapping(source = "updatedAt", target = "updatedAt", qualifiedByName = "LocalDateTimeToOffsetDateTime")
     BookResponse toBookResponse(Book book);
+
+    @Mapping(source = "bookGenre", target = "bookGenre", qualifiedByName = "StringToEnum")
+    Book toBook(BookRequest bookRequest);
 
     List<BookResponse> toListBookResponse(List<Book> bookList);
 
@@ -46,6 +51,19 @@ public interface BookMapper {
     @Named("EnumToString")
     default String enumToString(BookGenre bookGenre) {
         return bookGenre.getDisplayName();
+    }
+
+    @Named("StringToEnum")
+    default BookGenre stringToEnum(BookRequest.BookGenreEnum bookGenreEnum) {
+        return BookGenre.valueOf(bookGenreEnum.getValue());
+    }
+
+    @Named("LocalDateTimeToOffsetDateTime")
+    default OffsetDateTime getOffsetDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return OffsetDateTime.of(localDateTime, ZoneOffset.UTC);
     }
 
     private OffsetDateTime nowToUtcOffsetDateTime() {

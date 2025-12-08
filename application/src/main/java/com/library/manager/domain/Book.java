@@ -15,8 +15,6 @@ public class Book {
 
     private Long id;
 
-    private Editorial editorial;
-
     private String author;
 
     private String title;

@@ -7,5 +7,13 @@ import com.library.manager.domain.valueobjects.PaginationQuery;
 
 public interface BookServicePort {
 
+    Book save(Book book);
+
+    Book findActiveById(Long bookId);
+
+    Book update(Book book);
+
+    void deactivate(Long bookId);
+
     PaginatedResult<Book> getAllWithFilters(BookFilter filter, PaginationQuery paginationQuery);
 }

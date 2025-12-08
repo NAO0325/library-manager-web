@@ -36,6 +36,16 @@ public class BookControllerAdapter implements BooksApi {
 
     @Override
     public ResponseEntity<BookResponse> createBook(BookRequest bookRequest) {
+
+        Book book = bookServicePort.save(mapper.toBook(bookRequest));
+
+        BookResponse response = mapper.toBookResponse(book);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<BookResponse> updateBook(Long id, BookRequest bookRequest) {
         return null;
     }
 

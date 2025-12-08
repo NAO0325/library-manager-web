@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 
 
-@Mapper(componentModel = "spring", uses = {EditorialEntityMapper.class})
+@Mapper(componentModel = "spring")
 public interface BookEntityMapper {
 
     Book toDomain(BookEntity bookEntity);
