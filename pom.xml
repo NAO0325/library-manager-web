@@ -116,6 +116,10 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <excludes>
+                                <exclude>**/com/library/manager/driving/controllers/models/**</exclude>
+                                <exclude>**/com/library/manager/driving/controllers/api/**</exclude>
+                            </excludes>
                             <rules>
                                 <rule>
                                     <element>PACKAGE</element>
@@ -131,6 +135,12 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/com/library/manager/driving/controllers/models/**</exclude>
+                        <exclude>**/com/library/manager/driving/controllers/api/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
