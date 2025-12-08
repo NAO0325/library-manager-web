@@ -488,6 +488,7 @@ components:
           type: string
           description: Error code identifier
           enum:
+            - "NOT_FOUND"
             - "INVALID_CRITERIA"
             - "VALIDATION_ERROR"
             - "INTERNAL_ERROR"
