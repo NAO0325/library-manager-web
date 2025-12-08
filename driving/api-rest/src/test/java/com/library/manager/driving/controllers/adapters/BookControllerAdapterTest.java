@@ -12,6 +12,7 @@ import com.library.manager.driving.controllers.config.TestConfiguration;
 import com.library.manager.driving.controllers.error.CustomExceptionHandler;
 import com.library.manager.driving.controllers.mappers.BookMapper;
 import com.library.manager.driving.controllers.models.BookRequest;
+import com.library.manager.driving.controllers.models.BooksResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -158,10 +159,10 @@ class BookControllerAdapterTest {
                     10
             );
 
-            when(bookMapper.toFilter(null, null, null)).thenReturn(new BookFilter(null, null, null, true));
+            when(bookMapper.toFilter(any(), any(), any())).thenReturn(new BookFilter(null, null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books"))
@@ -179,10 +180,10 @@ class BookControllerAdapterTest {
             // Arrange
             PaginatedResult<Book> result = new PaginatedResult<>(List.of(), 0L, 0, 0, 20);
 
-            when(bookMapper.toFilter(null, null, null)).thenReturn(new BookFilter(null, null, null, true));
+            when(bookMapper.toFilter(any(), any(), any())).thenReturn(new BookFilter(null, null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -202,10 +203,10 @@ class BookControllerAdapterTest {
             // Arrange
             PaginatedResult<Book> result = new PaginatedResult<>(List.of(), 0L, 0, 0, 10);
 
-            when(bookMapper.toFilter(null, null, null)).thenReturn(new BookFilter(null, null, null, true));
+            when(bookMapper.toFilter(any(), any(), any())).thenReturn(new BookFilter(null, null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -229,7 +230,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter(null, "Test Author", null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -249,7 +250,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter("Test Book", null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -269,7 +270,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter(null, null, BookGenre.FICTION, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -289,7 +290,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter(null, null, BookGenre.SCIENCE_FICTION, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -320,7 +321,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter("Title", "Author", BookGenre.MYSTERY, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books")
@@ -342,7 +343,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter(null, null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(emptyResult);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books"))
@@ -359,7 +360,7 @@ class BookControllerAdapterTest {
                     .thenReturn(new BookFilter(null, null, null, true));
             when(bookServicePort.getAllWithFilters(any(BookFilter.class), any(PaginationQuery.class)))
                     .thenReturn(result);
-            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(any());
+            when(bookMapper.toResponse(any(PaginatedResult.class))).thenReturn(mock(BooksResponse.class));
 
             // Act & Assert
             mockMvc.perform(get("/v1/books"))
@@ -377,14 +378,14 @@ class BookControllerAdapterTest {
     class UpdateBookTests {
 
         @Test
-        @DisplayName("Should return null (not implemented yet)")
-        void shouldReturnNullForUpdateEndpoint() throws Exception {
-            // Act & Assert
+        @DisplayName("Should return 500 (not implemented yet)")
+        void shouldReturn500ForUpdateEndpoint() throws Exception {
+            // Act & Assert - updateBook returns null which causes NullPointerException
             mockMvc.perform(put("/v1/books/1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testBookRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").doesNotExist());
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"));
 
             verify(bookServicePort, never()).update(any(Book.class));
         }
