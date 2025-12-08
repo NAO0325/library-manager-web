@@ -12,6 +12,7 @@ import com.library.manager.driving.controllers.config.TestConfiguration;
 import com.library.manager.driving.controllers.error.CustomExceptionHandler;
 import com.library.manager.driving.controllers.mappers.BookMapper;
 import com.library.manager.driving.controllers.models.BookRequest;
+import com.library.manager.driving.controllers.models.BookResponse;
 import com.library.manager.driving.controllers.models.BooksResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -372,25 +373,185 @@ class BookControllerAdapterTest {
     }
 
     @Nested
+    @DisplayName("GET /v1/books/{id} - getBook() endpoint tests")
+    class GetBookTests {
+
+        @Test
+        @DisplayName("Should return book by ID with 200 OK")
+        void shouldReturnBookById() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            when(bookServicePort.findActiveById(bookId)).thenReturn(testBook);
+            when(bookMapper.toBookResponse(testBook)).thenReturn(mock(com.library.manager.driving.controllers.models.BookResponse.class));
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).findActiveById(bookId);
+            verify(bookMapper, times(1)).toBookResponse(testBook);
+        }
+
+        @Test
+        @DisplayName("Should return 404 when book not found")
+        void shouldReturn404WhenBookNotFound() throws Exception {
+            // Arrange
+            Long bookId = 999L;
+            when(bookServicePort.findActiveById(bookId)).thenThrow(new BookNotFoundException(bookId));
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+
+            verify(bookServicePort, times(1)).findActiveById(bookId);
+        }
+
+        @Test
+        @DisplayName("Should handle various valid ID formats")
+        void shouldHandleVariousIdFormats() throws Exception {
+            // Arrange
+            Long bookId = 123456789L;
+            when(bookServicePort.findActiveById(bookId)).thenReturn(testBook);
+            when(bookMapper.toBookResponse(testBook)).thenReturn(mock(com.library.manager.driving.controllers.models.BookResponse.class));
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).findActiveById(bookId);
+        }
+
+        @Test
+        @DisplayName("Should return proper book response structure")
+        void shouldReturnProperResponseStructure() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            BookResponse mockResponse = new BookResponse();
+            mockResponse.setId(bookId);
+            mockResponse.setTitle("Test Book");
+            mockResponse.setAuthor("Test Author");
+
+            when(bookServicePort.findActiveById(bookId)).thenReturn(testBook);
+            when(bookMapper.toBookResponse(testBook)).thenReturn(mockResponse);
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(bookId))
+                    .andExpect(jsonPath("$.title").value("Test Book"))
+                    .andExpect(jsonPath("$.author").value("Test Author"));
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /v1/books/{id} - deactivateBook() endpoint tests")
+    class DeactivateBookTests {
+
+        @Test
+        @DisplayName("Should deactivate book and return 204 NO CONTENT")
+        void shouldDeactivateBookSuccessfully() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            doNothing().when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isNoContent());
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+
+        @Test
+        @DisplayName("Should return 404 when trying to deactivate non-existent book")
+        void shouldReturn404WhenDeactivatingNonExistentBook() throws Exception {
+            // Arrange
+            Long bookId = 999L;
+            doThrow(new BookNotFoundException(bookId)).when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+
+        @Test
+        @DisplayName("Should handle deactivation of different book IDs")
+        void shouldHandleDifferentBookIds() throws Exception {
+            // Arrange
+            Long bookId = 12345L;
+            doNothing().when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isNoContent());
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+
+        @Test
+        @DisplayName("Should handle service layer exceptions during deactivation")
+        void shouldHandleServiceExceptions() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            doThrow(new IllegalArgumentException("Book cannot be deactivated"))
+                    .when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isBadRequest());
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+    }
+
+    @Nested
     @DisplayName("PUT /v1/books/{id} - updateBook() endpoint tests")
     class UpdateBookTests {
 
         @Test
-        @DisplayName("Should return 500 when updateBook returns null (not implemented)")
-        void shouldReturn500ForUpdateEndpoint() throws Exception {
-            // Act & Assert - updateBook returns null which causes NullPointerException
-            mockMvc.perform(put("/v1/books/{id}", 1L)
+        @DisplayName("Should update book successfully and return 200 OK")
+        void shouldUpdateBookSuccessfully() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            Book updatedBook = new Book();
+            updatedBook.setId(bookId);
+            updatedBook.setTitle(testBookRequest.getTitle());
+            updatedBook.setAuthor(testBookRequest.getAuthor());
+
+            when(bookMapper.toBook(any(BookRequest.class))).thenReturn(testBook);
+            when(bookServicePort.update(any(Book.class))).thenReturn(updatedBook);
+            when(bookMapper.toBookResponse(any(Book.class))).thenReturn(mock(BookResponse.class));
+
+            // Act & Assert
+            mockMvc.perform(put("/v1/books/{id}", bookId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testBookRequest)))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"));
+                    .andExpect(status().isOk());
 
-            // NOTE: This test verifies the current behavior (returns null)
-            // When updateBook is implemented, this test should be updated to:
-            // 1. Mock the mapper and service port
-            // 2. Expect status 200 OK
-            // 3. Verify the updated book is returned
-            verify(bookServicePort, never()).update(any(Book.class));
+            verify(bookMapper, times(1)).toBook(testBookRequest);
+            verify(bookServicePort, times(1)).update(argThat(book -> book.getId().equals(bookId)));
+            verify(bookMapper, times(1)).toBookResponse(updatedBook);
+        }
+
+        @Test
+        @DisplayName("Should return 404 when updating non-existent book")
+        void shouldReturn404WhenBookNotFound() throws Exception {
+            // Arrange
+            Long bookId = 999L;
+            when(bookMapper.toBook(any(BookRequest.class))).thenReturn(testBook);
+            when(bookServicePort.update(any(Book.class))).thenThrow(new BookNotFoundException(bookId));
+
+            // Act & Assert
+            mockMvc.perform(put("/v1/books/{id}", bookId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(testBookRequest)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+
+            verify(bookServicePort, times(1)).update(any(Book.class));
         }
 
         @Test
@@ -405,6 +566,8 @@ class BookControllerAdapterTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(invalidRequest)))
                     .andExpect(status().isBadRequest());
+
+            verify(bookServicePort, never()).update(any(Book.class));
         }
 
         @Test
@@ -415,16 +578,82 @@ class BookControllerAdapterTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{invalid json}"))
                     .andExpect(status().isBadRequest());
+
+            verify(bookServicePort, never()).update(any(Book.class));
         }
 
         @Test
-        @DisplayName("Should accept valid ID parameter")
-        void shouldAcceptValidIdParameter() throws Exception {
-            // Act & Assert - Even though implementation returns null, it should accept valid ID
-            mockMvc.perform(put("/v1/books/{id}", 999L)
+        @DisplayName("Should update book with different ID values")
+        void shouldUpdateBookWithDifferentIds() throws Exception {
+            // Arrange
+            Long bookId = 12345L;
+            Book updatedBook = new Book();
+            updatedBook.setId(bookId);
+
+            when(bookMapper.toBook(any(BookRequest.class))).thenReturn(testBook);
+            when(bookServicePort.update(any(Book.class))).thenReturn(updatedBook);
+            when(bookMapper.toBookResponse(any(Book.class))).thenReturn(mock(BookResponse.class));
+
+            // Act & Assert
+            mockMvc.perform(put("/v1/books/{id}", bookId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testBookRequest)))
-                    .andExpect(status().isInternalServerError()); // Current behavior due to null return
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).update(argThat(book -> book.getId().equals(bookId)));
+        }
+
+        @Test
+        @DisplayName("Should properly set ID on book before updating")
+        void shouldSetIdBeforeUpdate() throws Exception {
+            // Arrange
+            Long bookId = 42L;
+            Book bookToUpdate = new Book();
+            bookToUpdate.setTitle("Updated Title");
+
+            when(bookMapper.toBook(any(BookRequest.class))).thenReturn(bookToUpdate);
+            when(bookServicePort.update(any(Book.class))).thenReturn(bookToUpdate);
+            when(bookMapper.toBookResponse(any(Book.class))).thenReturn(mock(BookResponse.class));
+
+            // Act
+            mockMvc.perform(put("/v1/books/{id}", bookId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(testBookRequest)))
+                    .andExpect(status().isOk());
+
+            // Assert - verify the book passed to update has the correct ID
+            verify(bookServicePort, times(1)).update(argThat(book ->
+                    book.getId() != null && book.getId().equals(bookId)
+            ));
+        }
+
+        @Test
+        @DisplayName("Should return updated book response with all fields")
+        void shouldReturnCompleteUpdatedBookResponse() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            Book updatedBook = new Book();
+            updatedBook.setId(bookId);
+            updatedBook.setTitle("Updated Title");
+            updatedBook.setAuthor("Updated Author");
+
+            BookResponse mockResponse = new BookResponse();
+            mockResponse.setId(bookId);
+            mockResponse.setTitle("Updated Title");
+            mockResponse.setAuthor("Updated Author");
+
+            when(bookMapper.toBook(any(BookRequest.class))).thenReturn(testBook);
+            when(bookServicePort.update(any(Book.class))).thenReturn(updatedBook);
+            when(bookMapper.toBookResponse(updatedBook)).thenReturn(mockResponse);
+
+            // Act & Assert
+            mockMvc.perform(put("/v1/books/{id}", bookId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(testBookRequest)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(bookId))
+                    .andExpect(jsonPath("$.title").value("Updated Title"))
+                    .andExpect(jsonPath("$.author").value("Updated Author"));
         }
     }
 
