@@ -453,6 +453,22 @@ paths:
 components:
   schemas:
 
+    Link:
+      type: object
+      properties:
+        rel:
+          type: string
+          description: Relación (qué se puede hacer)
+          example: "self"
+        href:
+          type: string
+          description: La URL para realizar la acción
+          example: "/v1/books/1"
+        method:
+          type: string
+          description: Método HTTP necesario
+          example: "GET"
+
     BookRequest:
       type: object
       required:
@@ -513,6 +529,11 @@ components:
             $ref: "#/components/schemas/BookResponse"
         pagination:
           $ref: "#/components/schemas/Pagination"
+        links:
+          type: array
+          description: Enlaces de navegación de paginación (next, prev, self, etc.)
+          items:
+            $ref: '#/components/schemas/Link'
 
     BookResponse:
       type: object
@@ -559,6 +580,10 @@ components:
           format: date-time
           description: Timestamp when the book was updated
           example: "2024-06-03T14:30:00Z"
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
 
     Pagination:
       type: object

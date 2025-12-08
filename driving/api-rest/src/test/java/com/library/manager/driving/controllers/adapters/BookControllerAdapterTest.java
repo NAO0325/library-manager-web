@@ -143,6 +143,26 @@ class BookControllerAdapterTest {
     }
 
     @Nested
+    @DisplayName("GET /v1/books/{id} - getBook() endpoint tests")
+    class GetBookByIdTests {
+
+        @Test
+        @DisplayName("Should return book details when found")
+        void shouldReturnBookDetails() throws Exception {
+            // Arrange
+            when(bookServicePort.findActiveById(1L)).thenReturn(testBook);
+            when(bookMapper.toBookResponse(testBook)).thenReturn(new BookResponse());
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", 1L))
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).findActiveById(1L);
+            verify(bookMapper, times(1)).toBookResponse(testBook);
+        }
+    }
+
+    @Nested
     @DisplayName("GET /v1/books - getBooks() endpoint tests")
     class GetBooksTests {
 

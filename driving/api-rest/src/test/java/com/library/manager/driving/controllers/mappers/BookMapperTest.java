@@ -459,6 +459,35 @@ class BookMapperTest {
             assertTrue(result.getBooks().isEmpty());
             assertEquals(0, result.getPagination().getTotalElements());
         }
+
+        @Test
+        @DisplayName("Should include 'next' and 'prev' links when on a middle page")
+        void shouldIncludeNextAndPrevLinksWhenOnMiddlePage() {
+            // Arrange
+            PaginatedResult<Book> paginatedResult = new PaginatedResult<>(
+                    List.of(testBook),
+                    30L, // totalElements
+                    3,   // totalPages
+                    2,   // pageNumber (estamos en la 2)
+                    10   // pageSize
+            );
+
+            // Act
+            BooksResponse result = bookMapper.toResponse(paginatedResult);
+
+            // Assert
+            assertNotNull(result.getLinks(), "Links list should not be null");
+
+            // Verify
+            boolean hasNext = result.getLinks().stream()
+                    .anyMatch(link -> "next".equals(link.getRel()) && link.getHref().contains("page=3"));
+
+            boolean hasPrev = result.getLinks().stream()
+                    .anyMatch(link -> "prev".equals(link.getRel()) && link.getHref().contains("page=1"));
+
+            assertTrue(hasNext, "Should contain 'next' link pointing to page 3");
+            assertTrue(hasPrev, "Should contain 'prev' link pointing to page 1");
+        }
     }
 
     @Nested
