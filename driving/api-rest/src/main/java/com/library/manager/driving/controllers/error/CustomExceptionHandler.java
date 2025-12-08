@@ -25,6 +25,20 @@ public class CustomExceptionHandler {
     private static final String ISSUE = "issue";
     private static final String CRITERIA_FIELD = "criteria";
 
+    @ExceptionHandler(com.library.manager.application.exceptions.BookNotFoundException.class)
+    protected ResponseEntity<Error> handleBookNotFound(com.library.manager.application.exceptions.BookNotFoundException ex, WebRequest request) {
+        Error error = new Error();
+        error.setCode(Error.CodeEnum.NOT_FOUND);
+        error.setMessage(ex.getMessage());
+        error.setTimestamp(nowToUtcOffsetDateTime());
+
+        Map<String, Object> details = new HashMap<>();
+        details.put("resource", "Book");
+        error.setDetails(details);
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Error> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
         Error error = new Error();
