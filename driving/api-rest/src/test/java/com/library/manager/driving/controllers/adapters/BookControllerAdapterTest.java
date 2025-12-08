@@ -8,6 +8,7 @@ import com.library.manager.domain.BookGenre;
 import com.library.manager.domain.valueobjects.BookFilter;
 import com.library.manager.domain.valueobjects.PaginatedResult;
 import com.library.manager.domain.valueobjects.PaginationQuery;
+import com.library.manager.driving.controllers.config.TestConfiguration;
 import com.library.manager.driving.controllers.error.CustomExceptionHandler;
 import com.library.manager.driving.controllers.mappers.BookMapper;
 import com.library.manager.driving.controllers.models.BookRequest;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookControllerAdapter.class)
-@Import(CustomExceptionHandler.class)
+@ContextConfiguration(classes = {TestConfiguration.class, BookControllerAdapter.class, CustomExceptionHandler.class})
 @DisplayName("BookControllerAdapter Integration Tests")
 class BookControllerAdapterTest {
 
