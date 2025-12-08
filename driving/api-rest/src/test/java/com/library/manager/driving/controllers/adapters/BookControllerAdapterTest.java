@@ -368,7 +368,7 @@ class BookControllerAdapterTest {
 
             verify(bookServicePort, times(1)).getAllWithFilters(
                     any(BookFilter.class),
-                    argThat(query -> query.sortBy().equals("id") && query.sortDirection().equals("ASC"))
+                    argThat(query -> query.sortBy().equals("title") && query.sortDirection().equals("ASC"))
             );
         }
     }
