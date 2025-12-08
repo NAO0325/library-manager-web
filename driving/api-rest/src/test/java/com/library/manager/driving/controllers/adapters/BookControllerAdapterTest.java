@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -40,10 +40,10 @@ class BookControllerAdapterTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private BookServicePort bookServicePort;
 
-    @MockBean
+    @MockitoBean
     private BookMapper bookMapper;
 
     private Book testBook;
@@ -164,7 +164,7 @@ class BookControllerAdapterTest {
 
             verify(bookServicePort, times(1)).getAllWithFilters(
                     any(BookFilter.class),
-                    argThat(query -> query.pageNumber() == 0 && query.pageSize() == 10)
+                    argThat(query -> query.page() == 0 && query.pageSize() == 10)
             );
         }
 
@@ -187,7 +187,7 @@ class BookControllerAdapterTest {
 
             verify(bookServicePort, times(1)).getAllWithFilters(
                     any(BookFilter.class),
-                    argThat(query -> query.pageNumber() == 2 && query.pageSize() == 20)
+                    argThat(query -> query.page() == 2 && query.pageSize() == 20)
             );
         }
 
