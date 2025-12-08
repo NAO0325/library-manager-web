@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(title='Books List', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-books"></i> Books Library</h1>
+        <a href="/ui/books/new" class="btn btn-primary"><i class="fas fa-plus"></i> New Book</a>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/ui/books}" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="title" th:value="${filter.title}" placeholder="Title...">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="author" th:value="${filter.author}" placeholder="Author...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="genre">
+                        <option value="">All Genres</option>
+                        <option th:each="g : ${genres}" th:value="${g}" th:text="${g.displayName}"
+                                th:selected="${filter.bookGenre == g}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-grid">
+                    <button type="submit" class="btn btn-outline-primary"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+                <!-- Preserve Sort -->
+                <input type="hidden" name="sortBy" th:value="${sortBy}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='id', sortDir=${reverseSortDir}, title=${filter.title}, author=${filter.author})}" class="text-white text-decoration-none">ID <i class="fas fa-sort"></i></a>
+                    </th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Year</th>
+                    <th>Active</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${page.content}">
+                    <td th:text="${book.id}">1</td>
+                    <td th:text="${book.title}">Clean Code</td>
+                    <td th:text="${book.author}">Uncle Bob</td>
+                    <td><span class="badge bg-info text-dark" th:text="${book.bookGenre.displayName}">Tech</span></td>
+                    <td th:text="${book.publicationYear}">2008</td>
+                    <td>
+                            <span class="badge" th:classappend="${book.active ? 'bg-success' : 'bg-danger'}"
+                                  th:text="${book.active ? 'Active' : 'Inactive'}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/ui/books/{id}(id=${book.id})}" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
+                        <a th:href="@{/ui/books/{id}/edit(id=${book.id})}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                th:attr="data-id=${book.id}, data-title=${book.title}"
+                                onclick="prepDelete(this.getAttribute('data-id'), this.getAttribute('data-title'))">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination (Simplified for brevity, logic matches yours) -->
+    <nav th:if="${page.totalPages > 1}" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${page.pageNumber == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/ui/books(page=${page.pageNumber - 1})}">Previous</a>
+            </li>
+            <li class="page-item disabled"><span class="page-link" th:text="|Page ${page.pageNumber + 1} of ${page.totalPages}|"></span></li>
+            <li class="page-item" th:classappend="${page.pageNumber + 1 == page.totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/ui/books(page=${page.pageNumber + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Modal Delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Deactivate Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to deactivate <strong id="modalBookTitle"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post">
+                        <button type="submit" class="btn btn-danger">Deactivate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function prepDelete(id, title) {
+            document.getElementById('modalBookTitle').innerText = title;
+            document.getElementById('deleteForm').action = '/ui/books/' + id + '/delete';
+        }
+    </script>
+</div>
+</body>
+</html>

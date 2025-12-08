@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(title='Book Details', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3><i class="fas fa-book"></i> <span th:text="${book.title}">Title</span></h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Author</dt>
+                <dd class="col-sm-9" th:text="${book.author}"></dd>
+
+                <dt class="col-sm-3">Genre</dt>
+                <dd class="col-sm-9"><span class="badge bg-secondary" th:text="${book.bookGenre.displayName}"></span></dd>
+
+                <dt class="col-sm-3">Pages / Year</dt>
+                <dd class="col-sm-9">
+                    <span th:text="${book.pages}">0</span> pages, published in <span th:text="${book.publicationYear}">0000</span>
+                </dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                     <span class="badge" th:classappend="${book.active ? 'bg-success' : 'bg-warning'}"
+                           th:text="${book.active ? 'Active' : 'Inactive'}"></span>
+                </dd>
+
+                <dt class="col-sm-3">Created At</dt>
+                <dd class="col-sm-9" th:text="${#temporals.format(book.createdAt, 'dd-MM-yyyy HH:mm')}"></dd>
+            </dl>
+
+            <div class="mt-4">
+                <a href="/ui/books" class="btn btn-secondary">Back</a>
+                <a th:href="@{/ui/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Edit</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

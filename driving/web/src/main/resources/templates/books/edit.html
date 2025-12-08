@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(title='Edit Book', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="fas fa-edit"></i> Edit Book
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- El action apunta a /ui/books/{id} -->
+                    <form th:action="@{/ui/books/{id}(id=${book.id})}" th:object="${book}" method="post">
+
+                        <!-- Campo ID (Oculto o Solo Lectura) -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label text-muted">Book ID</label>
+                                <input type="text" class="form-control" th:field="*{id}" readonly
+                                       style="background-color: #e9ecef;">
+                            </div>
+                        </div>
+
+                        <!-- Título y Autor -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Title *</label>
+                                <input type="text" class="form-control" th:field="*{title}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Author *</label>
+                                <input type="text" class="form-control" th:field="*{author}" required>
+                            </div>
+                        </div>
+
+                        <!-- Género, Páginas y Año -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Genre</label>
+                                <select class="form-select" th:field="*{bookGenre}">
+                                    <!-- Thymeleaf seleccionará automáticamente el valor actual gracias a th:field -->
+                                    <option th:each="g : ${genres}" th:value="${g}" th:text="${g.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Pages</label>
+                                <input type="number" class="form-control" th:field="*{pages}" min="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Year</label>
+                                <input type="number" class="form-control" th:field="*{publicationYear}" min="1000" max="2999">
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="/ui/books" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save"></i> Update Book
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
