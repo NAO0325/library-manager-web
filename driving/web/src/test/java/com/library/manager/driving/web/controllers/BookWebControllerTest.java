@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookWebController.class)
-@ContextConfiguration(classes = {TestConfiguration.class, BookWebController.class})
+@ContextConfiguration(classes = {TestConfiguration.class, BookWebController.class, com.library.manager.driving.web.exception.WebExceptionHandler.class})
 @DisplayName("BookWebController MVC Tests")
 class BookWebControllerTest {
 
@@ -349,6 +349,10 @@ class BookWebControllerTest {
             Book anotherBook = new Book();
             anotherBook.setId(42L);
             anotherBook.setTitle("Another Book");
+            anotherBook.setAuthor("Another Author");
+            anotherBook.setBookGenre(BookGenre.MYSTERY);
+            anotherBook.setPages(200);
+            anotherBook.setPublicationYear(2023);
             when(bookServicePort.findActiveById(42L)).thenReturn(anotherBook);
 
             // Act & Assert
