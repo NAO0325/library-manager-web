@@ -374,6 +374,89 @@ class BookControllerAdapterTest {
     }
 
     @Nested
+    @DisplayName("GET /v1/books/{id} - getBook() endpoint tests")
+    class GetBookTests {
+
+        @Test
+        @DisplayName("Should return book by ID with 200 OK")
+        void shouldReturnBookById() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            when(bookServicePort.findActiveById(bookId)).thenReturn(testBook);
+            when(bookMapper.toBookResponse(testBook)).thenReturn(mock(com.library.manager.driving.controllers.models.BookResponse.class));
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).findActiveById(bookId);
+            verify(bookMapper, times(1)).toBookResponse(testBook);
+        }
+
+        @Test
+        @DisplayName("Should return 404 when book not found")
+        void shouldReturn404WhenBookNotFound() throws Exception {
+            // Arrange
+            Long bookId = 999L;
+            when(bookServicePort.findActiveById(bookId)).thenThrow(new BookNotFoundException(bookId));
+
+            // Act & Assert
+            mockMvc.perform(get("/v1/books/{id}", bookId))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+
+            verify(bookServicePort, times(1)).findActiveById(bookId);
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /v1/books/{id} - deactivateBook() endpoint tests")
+    class DeactivateBookTests {
+
+        @Test
+        @DisplayName("Should deactivate book and return 200 OK")
+        void shouldDeactivateBookSuccessfully() throws Exception {
+            // Arrange
+            Long bookId = 1L;
+            doNothing().when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isOk());
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+
+        @Test
+        @DisplayName("Should return 404 when trying to deactivate non-existent book")
+        void shouldReturn404WhenDeactivatingNonExistentBook() throws Exception {
+            // Arrange
+            Long bookId = 999L;
+            doThrow(new BookNotFoundException(bookId)).when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", bookId))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+
+            verify(bookServicePort, times(1)).deactivate(bookId);
+        }
+
+        @Test
+        @DisplayName("Should return 400 when ID is invalid")
+        void shouldReturn400WhenIdIsInvalid() throws Exception {
+            // Arrange
+            Long bookId = null;
+            doThrow(new IllegalArgumentException("Book ID cannot be null"))
+                    .when(bookServicePort).deactivate(bookId);
+
+            // Act & Assert
+            mockMvc.perform(delete("/v1/books/{id}", "null"))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
     @DisplayName("PUT /v1/books/{id} - updateBook() endpoint tests")
     class UpdateBookTests {
 
