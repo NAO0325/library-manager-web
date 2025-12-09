@@ -98,7 +98,7 @@ paths:
       parameters:
         - name: page
           in: query
-          description: Page number to retrieve (1-indexed). First page is 1.
+          description: Page number to retrieve. First page is 1.
           required: false
           schema:
             type: integer

@@ -17,8 +17,8 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
         SELECT b
         FROM BookEntity b
         WHERE (:#{#filter.active} IS NULL OR b.active = :#{#filter.active})
-        AND (:#{#filter.title} IS NULL OR LOWER(CAST(b.title AS string)) LIKE LOWER(CONCAT('%', CAST(:#{#filter.title} AS string), '%')))
-        AND (:#{#filter.author} IS NULL OR LOWER(CAST(b.author AS string)) LIKE LOWER(CONCAT('%', CAST(:#{#filter.author} AS string), '%')))
+        AND (:#{#filter.title} IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :#{#filter.title}, '%')))
+        AND (:#{#filter.author} IS NULL OR LOWER(b.author) LIKE LOWER(CONCAT('%', :#{#filter.author}, '%')))
         AND (:#{#filter.bookGenre} IS NULL OR b.bookGenre = :#{#filter.bookGenre})
         """)
     Page<BookEntity> findAllWithFilters(BookFilter filter, Pageable pageable);

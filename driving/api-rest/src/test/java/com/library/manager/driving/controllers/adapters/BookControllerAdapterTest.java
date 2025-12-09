@@ -189,7 +189,7 @@ class BookControllerAdapterTest {
 
             verify(bookServicePort, times(1)).getAllWithFilters(
                     any(BookFilter.class),
-                    argThat(query -> query.page() == 0 && query.pageSize() == 10)
+                    argThat(query -> query.page() == 1 && query.pageSize() == 10)
             );
         }
 
@@ -212,7 +212,7 @@ class BookControllerAdapterTest {
 
             verify(bookServicePort, times(1)).getAllWithFilters(
                     any(BookFilter.class),
-                    argThat(query -> query.page() == 2 && query.pageSize() == 20)
+                    argThat(query -> query.page() == 3 && query.pageSize() == 20)
             );
         }
 

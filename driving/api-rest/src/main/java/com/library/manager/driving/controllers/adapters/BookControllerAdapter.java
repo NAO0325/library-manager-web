@@ -87,7 +87,7 @@ public class BookControllerAdapter implements BooksApi {
         PaginatedResult<Book> paginatedResult = bookServicePort.getAllWithFilters(
                 filter,
                 new PaginationQuery(
-                        page.orElse(DEFAULT_PAGE) - 1,
+                        page.orElse(DEFAULT_PAGE),
                         pageSize.orElse(DEFAULT_PAGE_SIZE),
                         sortBy.orElse(DEFAULT_SORT_BY),
                         sortDirection.orElse(DEFAULT_SORT_DIRECTION)
