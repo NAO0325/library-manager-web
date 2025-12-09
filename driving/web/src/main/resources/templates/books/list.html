@@ -4,7 +4,7 @@
 <body>
 <div th:fragment="content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fas fa-books"></i> Books Library</h1>
+        <h1><i class="fas fa-book"></i> Books </h1>
         <a href="/ui/books/new" class="btn btn-primary"><i class="fas fa-plus"></i> New Book</a>
     </div>
 
@@ -13,10 +13,12 @@
         <div class="card-body">
             <form th:action="@{/ui/books}" method="get" class="row g-3">
                 <div class="col-md-3">
-                    <input type="text" class="form-control" name="title" th:value="${filter.title}" placeholder="Title...">
+                    <input type="text" class="form-control" name="title" th:value="${filter.title}"
+                           placeholder="Title...">
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" name="author" th:value="${filter.author}" placeholder="Author...">
+                    <input type="text" class="form-control" name="author" th:value="${filter.author}"
+                           placeholder="Author...">
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" name="genre">
@@ -42,13 +44,76 @@
                 <thead class="table-dark">
                 <tr>
                     <th>
-                        <a th:href="@{/ui/books(sortBy='id', sortDir=${reverseSortDir}, title=${filter.title}, author=${filter.author})}" class="text-white text-decoration-none">ID <i class="fas fa-sort"></i></a>
+                        <a th:href="@{/ui/books(sortBy='id', sortDir=${sortBy == 'id' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            ID
+                            <!-- Icon logic -->
+                            <i th:if="${sortBy == 'id'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'id'}" class="fas fa-sort text-muted" style="opacity: 0.5"></i>
+                        </a>
                     </th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Year</th>
-                    <th>Active</th>
+
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='title', sortDir=${sortBy == 'title' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            Title
+                            <i th:if="${sortBy == 'title'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'title'}" class="fas fa-sort text-muted" style="opacity: 0.5"></i>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='author', sortDir=${sortBy == 'author' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            Author
+                            <i th:if="${sortBy == 'author'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'author'}" class="fas fa-sort text-muted"
+                               style="opacity: 0.5"></i>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='bookGenre', sortDir=${sortBy == 'bookGenre' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            Genre
+                            <i th:if="${sortBy == 'bookGenre'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'bookGenre'}" class="fas fa-sort text-muted"
+                               style="opacity: 0.5"></i>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='publicationYear', sortDir=${sortBy == 'publicationYear' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            Year
+                            <i th:if="${sortBy == 'publicationYear'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'publicationYear'}" class="fas fa-sort text-muted"
+                               style="opacity: 0.5"></i>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a th:href="@{/ui/books(sortBy='active', sortDir=${sortBy == 'active' ? reverseSortDir : 'asc'},
+               title=${filter.title}, author=${filter.author}, genre=${filter.bookGenre}, active=${filter.active})}"
+                           class="text-white text-decoration-none">
+                            Active
+                            <i th:if="${sortBy == 'active'}"
+                               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></i>
+                            <i th:unless="${sortBy == 'active'}" class="fas fa-sort text-muted"
+                               style="opacity: 0.5"></i>
+                        </a>
+                    </th>
+
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -64,9 +129,12 @@
                                   th:text="${book.active ? 'Active' : 'Inactive'}"></span>
                     </td>
                     <td>
-                        <a th:href="@{/ui/books/{id}(id=${book.id})}" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
-                        <a th:href="@{/ui/books/{id}/edit(id=${book.id})}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
-                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        <a th:href="@{/ui/books/{id}(id=${book.id})}" class="btn btn-sm btn-outline-info"><i
+                                class="fas fa-eye"></i></a>
+                        <a th:href="@{/ui/books/{id}/edit(id=${book.id})}" class="btn btn-sm btn-outline-warning"><i
+                                class="fas fa-edit"></i></a>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
                                 th:attr="data-id=${book.id}, data-title=${book.title}"
                                 onclick="prepDelete(this.getAttribute('data-id'), this.getAttribute('data-title'))">
                             <i class="fas fa-trash"></i>
@@ -78,20 +146,20 @@
         </div>
     </div>
 
-    <!-- Pagination (Simplified for brevity, logic matches yours) -->
     <nav th:if="${page.totalPages > 1}" class="mt-3">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${page.pageNumber == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/ui/books(page=${page.pageNumber - 1})}">Previous</a>
             </li>
-            <li class="page-item disabled"><span class="page-link" th:text="|Page ${page.pageNumber + 1} of ${page.totalPages}|"></span></li>
+            <li class="page-item disabled"><span class="page-link"
+                                                 th:text="|Page ${page.pageNumber + 1} of ${page.totalPages}|"></span>
+            </li>
             <li class="page-item" th:classappend="${page.pageNumber + 1 == page.totalPages} ? 'disabled'">
                 <a class="page-link" th:href="@{/ui/books(page=${page.pageNumber + 1})}">Next</a>
             </li>
         </ul>
     </nav>
 
-    <!-- Modal Delete -->
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
